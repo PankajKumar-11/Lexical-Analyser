@@ -1,0 +1,30 @@
+// TEST 2: Operators and Delimiters
+// Tests all arithmetic, relational, logical operators and delimiters
+
+int a = 10;
+int b = 3;
+
+// Arithmetic: + - * / %
+int sum = a + b;
+int diff = a - b;
+int prod = a * b;
+int quot = a / b;
+int rem = a % b;
+
+// Relational: == != < > <= >=
+bool r1 = (a == b);
+bool r2 = (a != b);
+bool r3 = (a < b);
+bool r4 = (a > b);
+bool r5 = (a <= b);
+bool r6 = (a >= b);
+
+// Logical: && || !
+bool r7 = (r1 && r2);
+bool r8 = (r3 || r4);
+bool r9 = !r5;
+
+// All delimiters: ( ) { } ; ,
+int func(int x, int y) {
+    return x;
+}

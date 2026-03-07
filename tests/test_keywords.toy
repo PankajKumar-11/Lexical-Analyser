@@ -1,0 +1,18 @@
+// TEST 1: Keywords Test
+// Every keyword should be recognized as its own token type (not IDENT)
+
+int x = 5;
+float y = 3.14;
+bool flag = true;
+
+if (flag) {
+    return x;
+} else {
+    while (x > 0) {
+        x = x - 1;
+    }
+}
+
+for (int i = 0; i < 10; i = i + 1) {
+    bool done = false;
+}

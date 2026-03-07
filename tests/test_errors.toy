@@ -1,0 +1,13 @@
+// TEST 3: Error Recovery
+// Multiple invalid characters — lexer should report ALL errors, not stop at first
+
+int a = 5;
+int b = 10 @ 3;
+float c = 2.5 # 1.0;
+bool d = true $ false;
+int e = a ^ b;
+int f = a ~ b;
+
+// After all errors, these should still tokenize correctly:
+int result = a + b;
+return result;

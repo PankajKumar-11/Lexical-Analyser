@@ -1,0 +1,28 @@
+// ToyLang sample — covers all token categories
+// This program exercises every token type the lexer must recognize.
+
+int factorial(int n) {
+    if (n <= 1) {
+        return 1;
+    } else {
+        return n * factorial(n - 1);
+    }
+}
+
+float compute(float a, float b) {
+    float result = a + b * 2.5;
+    bool flag = (result >= 10.0) && (a != 0.0);
+    if (flag || !false) {
+        result = result % 3 + (a - b);
+    }
+    return result;
+}
+
+int counter = 0;
+for (int i = 0; i < 10; i = i + 1) {
+    counter = counter + i;
+}
+
+/* multi-line comment — ignored by lexer */
+int x = 5 @ 3;   // ERROR: @ is invalid in ToyLang
+bool y = true;
