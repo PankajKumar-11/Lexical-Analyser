@@ -1,7 +1,7 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
-/* ─── TokenType Enum ─── */
+/* TokenType Enum */
 typedef enum {
     /* Data-type keywords */
     TOK_INT, TOK_FLOAT, TOK_BOOL,
@@ -34,7 +34,7 @@ typedef enum {
     TOK_EOF, TOK_ERROR
 } TokenType;
 
-/* ─── Token Struct ─── */
+/* Token Struct */
 typedef struct {
     TokenType  type;        /* token category        */
     char       lexeme[256]; /* matched text           */

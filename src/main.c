@@ -1,4 +1,4 @@
-/* ─── ToyLang Lexical Analyzer — Driver ─── */
+/* ToyLang Lexical Analyzer - Driver */
 #include <stdio.h>
 #include "token.h"
 
@@ -21,12 +21,12 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    printf("╔══════════════════════════════════════════════════════╗\n");
-    printf("║        ToyLang  Lexical  Analyzer  —  v1.0         ║\n");
-    printf("╚══════════════════════════════════════════════════════╝\n");
+    printf("======================================================\n");
+    printf("        ToyLang Lexical Analyzer - v1.0\n");
+    printf("======================================================\n");
     printf("  Source file: %s\n\n", argv[1]);
     printf("  %-8s  %-16s  %s\n", "Line", "Token", "Lexeme");
-    printf("  %-8s  %-16s  %s\n", "────", "─────────────", "──────────────");
+    printf("  %-8s  %-16s  %s\n", "----", "-------------", "--------------");
 
     int tok;
     int token_count = 0;
@@ -39,16 +39,16 @@ int main(int argc, char *argv[]) {
 
     fclose(yyin);
 
-    printf("\n  ── Summary ──────────────────────────────────────────\n");
+    printf("\n  Summary --------------------------------------------\n");
     printf("  Total tokens : %d\n", token_count);
 
     if (error_count > 0) {
         printf("  Lexical errors: %d (see stderr)\n", error_count);
     } else {
-        printf("  Lexical errors: 0 — clean scan ✓\n");
+        printf("  Lexical errors: 0 - clean scan\n");
     }
 
-    printf("  ────────────────────────────────────────────────────\n");
+    printf("  ----------------------------------------------------\n");
 
     return (error_count > 0) ? 1 : 0;
 }

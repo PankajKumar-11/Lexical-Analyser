@@ -1,4 +1,4 @@
-# ─── ToyLang Lexical Analyzer ── Makefile ───
+# ToyLang Lexical Analyzer Makefile
 CC      = gcc
 CFLAGS  = -Wall -std=c99 -D_POSIX_C_SOURCE=200809L
 TARGET  = toylang_lexer

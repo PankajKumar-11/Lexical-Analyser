@@ -1,5 +1,5 @@
 %{
-/* ─── ToyLang Lexical Analyzer ─── */
+/* ToyLang Lexical Analyzer */
 #define _POSIX_C_SOURCE 200809L  /* expose fileno() in strict C99 */
 #include <stdio.h>
 #include <string.h>
@@ -15,7 +15,7 @@ int col = 1;          /* current column tracker            */
 
 %option noyywrap yylineno noinput nounput
 
-/* ─── Named Regex Macros ─── */
+/* Named Regex Macros */
 DIGIT     [0-9]
 LETTER    [a-zA-Z_]
 ALNUM     [a-zA-Z0-9_]
@@ -26,11 +26,9 @@ WS        [ \t\r]+
 NEWLINE   \n
 
 %%
- /* ═══════════════════════════════════════════════════════
-  *  RULES — ordered by priority (longest match + first rule wins)
-  * ═══════════════════════════════════════════════════════ */
+ /* RULES: ordered by priority (longest match + first rule wins) */
 
- /* ── 1. Keywords (before IDENT) ── */
+ /* 1. Keywords (before IDENT) */
 "if"        { UPDATE_COL(); return TOK_IF;     }
 "else"      { UPDATE_COL(); return TOK_ELSE;   }
 "while"     { UPDATE_COL(); return TOK_WHILE;  }
@@ -42,41 +40,41 @@ NEWLINE   \n
 "true"      { UPDATE_COL(); return TOK_TRUE;   }
 "false"     { UPDATE_COL(); return TOK_FALSE;  }
 
- /* ── 2. Float literal (before INT to avoid 3.14 → INT+DOT+INT) ── */
+ /* 2. Float literal (before INT to avoid 3.14 -> INT+DOT+INT) */
 {FLOAT_LIT} { UPDATE_COL(); return TOK_FLOAT_LIT; }
 
- /* ── 3. Integer literal ── */
+ /* 3. Integer literal */
 {INT_LIT}   { UPDATE_COL(); return TOK_INT_LIT; }
 
- /* ── 4. Identifiers (after all keywords) ── */
+ /* 4. Identifiers (after all keywords) */
 {IDENT}     { UPDATE_COL(); return TOK_IDENT; }
 
- /* ── 5. Two-char relational operators (before single-char) ── */
+ /* 5. Two-char relational operators (before single-char) */
 "=="        { UPDATE_COL(); return TOK_EQ;  }
 "!="        { UPDATE_COL(); return TOK_NEQ; }
 "<="        { UPDATE_COL(); return TOK_LEQ; }
 ">="        { UPDATE_COL(); return TOK_GEQ; }
 
- /* ── 6. Two-char logical operators ── */
+ /* 6. Two-char logical operators */
 "&&"        { UPDATE_COL(); return TOK_AND; }
 "||"        { UPDATE_COL(); return TOK_OR;  }
 
- /* ── 7. Single-char arithmetic operators ── */
+ /* 7. Single-char arithmetic operators */
 "+"         { UPDATE_COL(); return TOK_PLUS;  }
 "-"         { UPDATE_COL(); return TOK_MINUS; }
 "*"         { UPDATE_COL(); return TOK_STAR;  }
 "/"         { UPDATE_COL(); return TOK_SLASH; }
 "%"         { UPDATE_COL(); return TOK_MOD;   }
 
- /* ── 8. Single-char relational / logical (after 2-char versions) ── */
+ /* 8. Single-char relational / logical (after 2-char versions) */
 "<"         { UPDATE_COL(); return TOK_LT;  }
 ">"         { UPDATE_COL(); return TOK_GT;  }
 "!"         { UPDATE_COL(); return TOK_NOT; }
 
- /* ── 9. Assignment (after ==) ── */
+ /* 9. Assignment (after ==) */
 "="         { UPDATE_COL(); return TOK_ASSIGN; }
 
- /* ── 10. Delimiters ── */
+ /* 10. Delimiters */
 "("         { UPDATE_COL(); return TOK_LPAREN; }
 ")"         { UPDATE_COL(); return TOK_RPAREN; }
 "{"         { UPDATE_COL(); return TOK_LBRACE; }
@@ -84,10 +82,10 @@ NEWLINE   \n
 ";"         { UPDATE_COL(); return TOK_SEMI;   }
 ","         { UPDATE_COL(); return TOK_COMMA;  }
 
- /* ── 11. Single-line comment — silently consumed ── */
+ /* 11. Single-line comment - silently consumed */
 "//"[^\n]*  { UPDATE_COL(); /* no token emitted */ }
 
- /* ── 12. Multi-line comment — silently consumed ── */
+ /* 12. Multi-line comment - silently consumed */
 "/*"([^*]|\*+[^*/])*\*+"/"  { 
     /* Count newlines inside the comment to keep yylineno accurate */
     for (int i = 0; i < yyleng; i++) {
@@ -100,18 +98,18 @@ NEWLINE   \n
     /* no token emitted */ 
 }
 
- /* ── 13. Whitespace — silently consumed ── */
+ /* 13. Whitespace - silently consumed */
 {WS}        { UPDATE_COL(); /* skip */ }
 
- /* ── 14. Newline — consumed, reset column ── */
+ /* 14. Newline - consumed, reset column */
 {NEWLINE}   { RESET_COL(); /* yylineno auto-incremented by %option yylineno */ }
 
- /* ── 15. Unterminated comment at EOF ── */
+ /* 15. Unterminated comment at EOF */
 <<EOF>>     {
     return TOK_EOF;
 }
 
- /* ── 16. Catch-all: any unrecognized character → LEXICAL_ERROR ── */
+ /* 16. Catch-all: any unrecognized character -> LEXICAL_ERROR */
 .           {
     fprintf(stderr,
         "LEXICAL_ERROR [line %d, col %d]: unexpected character '%s'\n",
@@ -123,9 +121,7 @@ NEWLINE   \n
 
 %%
 
-/* ═══════════════════════════════════════════════════════
- *  USER CODE SECTION — helper functions
- * ═══════════════════════════════════════════════════════ */
+/* USER CODE SECTION: helper functions */
 
 const char *token_name(int type) {
     switch (type) {
