@@ -1,0 +1,11 @@
+// Valid expression
+a = 5 + 3 * (2 - b) || true && !c;
+
+// Syntax Error: missing parenthesis and invalid token
+d = 5 + * 3;
+
+// Synch test: Skip until semicolon
+e = 10 % ;
+
+// Another valid expression
+f = 1 < 2 && 4 >= 3;

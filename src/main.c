@@ -1,6 +1,6 @@
-/* ToyLang Lexical Analyzer - Driver */
 #include <stdio.h>
 #include "token.h"
+#include "parser.h"
 
 /* Flex-generated globals */
 extern FILE *yyin;
@@ -22,33 +22,24 @@ int main(int argc, char *argv[]) {
     }
 
     printf("======================================================\n");
-    printf("        ToyLang Lexical Analyzer - v1.0\n");
+    printf("        ToyLang Predictive Parser - v1.0\n");
     printf("======================================================\n");
     printf("  Source file: %s\n\n", argv[1]);
-    printf("  %-8s  %-16s  %s\n", "Line", "Token", "Lexeme");
-    printf("  %-8s  %-16s  %s\n", "----", "-------------", "--------------");
 
-    int tok;
-    int token_count = 0;
-
-    while ((tok = yylex()) != TOK_EOF) {
-        printf("  [Line %2d]  %-16s  '%s'\n",
-               yylineno, token_name(tok), yytext);
-        token_count++;
-    }
+    int parse_errors = parse();
 
     fclose(yyin);
 
     printf("\n  Summary --------------------------------------------\n");
-    printf("  Total tokens : %d\n", token_count);
 
-    if (error_count > 0) {
-        printf("  Lexical errors: %d (see stderr)\n", error_count);
+    if (error_count > 0 || parse_errors > 0) {
+        printf("  Lexical errors: %d\n", error_count);
+        printf("  Syntax errors:  %d\n", parse_errors);
     } else {
-        printf("  Lexical errors: 0 - clean scan\n");
+        printf("  Errors: 0 - smooth parsing!\n");
     }
 
     printf("  ----------------------------------------------------\n");
 
-    return (error_count > 0) ? 1 : 0;
+    return (error_count > 0 || parse_errors > 0) ? 1 : 0;
 }

@@ -12,8 +12,8 @@ all: $(TARGET)
 lex.yy.c: $(SRC_DIR)/toylang.l
 	flex $(SRC_DIR)/toylang.l
 
-$(TARGET): lex.yy.c $(SRC_DIR)/main.c $(SRC_DIR)/token.h
-	$(CC) $(CFLAGS) -I$(SRC_DIR) -o $(TARGET) lex.yy.c $(SRC_DIR)/main.c -lfl
+$(TARGET): lex.yy.c $(SRC_DIR)/main.c $(SRC_DIR)/token.h $(SRC_DIR)/parser.c $(SRC_DIR)/parser.h
+	$(CC) $(CFLAGS) -I$(SRC_DIR) -o $(TARGET) lex.yy.c $(SRC_DIR)/main.c $(SRC_DIR)/parser.c -lfl
 
 run: all
 	./$(TARGET) $(TEST_DIR)/sample.toy
