@@ -1,8 +1,9 @@
-# ToyLang Lexical Analyzer
+# ToyLang Lexical Analyzer & Predictive Parser
 
-A complete **Lexical Analyzer** for ToyLang — a compact educational programming language — built with **C + LEX (Flex)**.
+A complete **Lexical Analyzer** and **LL(1) Predictive Parser** for ToyLang — a compact educational programming language — built with **C + LEX (Flex)**.
 
-The lexer reads `.toy` source files and emits a classified token stream (keywords, identifiers, literals, operators, delimiters) with line/column numbers and full error recovery.
+- **Lexer (Part 1)** reads `.toy` source files and emits a classified token stream (keywords, identifiers, literals, operators, delimiters).
+- **Parser (Part 2)** implements a non-recursive, explicit-stack LL(1) predictive parser that validates expressions and implements panic-mode error recovery using synchronizing sets.
 
 ---
 
@@ -12,9 +13,11 @@ The lexer reads `.toy` source files and emits a classified token stream (keyword
 |------|---------|
 | `token.h` | `TokenType` enum + `Token` struct definition |
 | `toylang.l` | Flex specification — regex rules + C actions + error handling |
-| `main.c` | Entry point: opens file, calls `yylex()` loop, prints tokens |
-| `Makefile` | Build automation: `flex → gcc → link` |
-| `sample.toy` | Test program covering all token categories + error case |
+| `parser.h` | `NonTerminal` enum + `StackSymbol` definitions |
+| `parser.c` | Predictive parsing explicitly simulated stack logic + panic mode recovery |
+| `main.c` | Entry point: calls parser and triggers the lexer sequence |
+| `Makefile` | Build automation (`make` environment target) |
+| `tests/` | Directory containing `.toy` sample files for Lexer and Parser testing |
 
 ## Prerequisites
 
@@ -29,32 +32,28 @@ The lexer reads `.toy` source files and emits a classified token stream (keyword
 sudo apt update && sudo apt install flex gcc make
 ```
 
-## Build
+## Build (Windows cmd / PowerShell)
 
-```bash
-make
+Since `flex` is not natively available on Windows without WSL/MinGW-MSYS, the generated `lex.yy.c` has been included in the repository. You can compile the project natively bypassing `make` by calling `gcc` directly:
+
+```cmd
+gcc -Wall -std=c99 -D_POSIX_C_SOURCE=200809L -Isrc -o toylang_lexer.exe lex.yy.c src/main.c src/parser.c
 ```
 
-This runs:
-1. `flex toylang.l` → generates `lex.yy.c`
-2. `gcc -Wall -std=c99 -o toylang_lexer lex.yy.c main.c -lfl` → produces `toylang_lexer`
+*(If you are on Linux or macOS, you can still just run `make`)*
 
 ## Run
 
-```bash
-./toylang_lexer sample.toy
+To execute the parser against a `.toy` source file, use the generated executable pointing to one of the test files:
+
+**Run a Valid Expression:**
+```cmd
+.\toylang_lexer.exe tests\test_valid.toy
 ```
 
-Or use the Makefile shortcut:
-
-```bash
-make run
-```
-
-## Clean
-
-```bash
-make clean
+**Run an Invalid Expression (Error Recovery Synch test):**
+```cmd
+.\toylang_lexer.exe tests\test_error.toy
 ```
 
 ## Token Categories
@@ -72,13 +71,10 @@ make clean
 | Delimiters | `(` `)` `{` `}` `;` `,` | Single char |
 | Comments | `// ...` and `/* ... */` | Consumed silently |
 
-## Error Handling
+## Parser Logic & Error Handling
 
-Invalid characters produce:
-```
-LEXICAL_ERROR [line X, col Y]: unexpected character '<c>'
-```
-The lexer **continues scanning** after an error — all errors in a file are reported in one run.
+- **Grammar Validation**: Matches arithmetic (`+`, `-`, `*`, `/`, `%`) and logical expressions (`&&`, `||`, `!`, `==`, `<`, etc.)
+- **Error Recovery**: The parser utilizes Panic Mode synchronization. If an unexpected token is encountered, it skips tokens until it finds a synchronizing element in the `FOLLOW` set (like `EOF`), pops the broken production from the stack, and safely continues parsing the rest of the file.
 
 ---
 
